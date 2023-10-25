@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chatbot</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            overflow: hidden; /* Disable page scroll */
+        }
+
+        .container {
+            width: 100%;
+            height: calc(100vh);
+            background-color: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #fff;
+        }
+
+        .title {
+            padding: 20px;
+            text-align: center;
+        }
+
+        #chat-container {
+            width: 100%;
+            border: 1px solid #ddd; /* Light border */
+            flex: 1; /* Take up remaining space */
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            overflow-y: auto; /* Make chat container scrollable */
+        }
+
+        #chat-log {
+            flex: 1; /* Expand the chat log */
+            padding: 20px;
+        }
+
+        #user-input {
+            width: 80%;
+            padding: 10px;
+            border: none;
+            font-size: 16px;
+            outline: none;
+            background: #f2f2f2;
+        }
+
+        #submit-button {
+            background-color: #212121;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 5px;
+        }
+
+        .user-message {
+            background-color: #fcf6ee;
+            color: #000;
+            text-align: right;
+        }
+
+        .bot-message {
+            background-color: #ffffff;
+            color: #000;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <h1>MadBot</h1>
+            <p>The Chatbot</p>
+        </div>
+        <div id="chat-container">
+            <div id="chat-log"></div>
+            <form id="chat-form" method="POST" action="/chat">
+                <input type="text" name "user_input" id="user-input" placeholder="You: " autocomplete="off" required>
+                <input type="submit" value="Submit" id="submit-button">
+            </form>
+        </div>
+    </div>
+    <script>
+        const chatLog = document.getElementById('chat-log');
+        const userInputElement = document.getElementById('user-input');
+        const chatForm = document.getElementById('chat-form');
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const user_input = userInputElement.value;
+            userInputElement.value = '';
+            chatLog.innerHTML += `<div class="message user-message">You: ${user_input}</div>`;
+
+            const response = await fetch('/chat', {
+                method: 'POST',
+                body: new URLSearchParams({ user_input }),
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                },
+            });
+
+            const botResponse = await response.text();
+            chatLog.innerHTML += `<div class="message bot-message">MadBot: ${botResponse}</div>`;
+
+            if (botResponse.toLowerCase() === 'goodbye!') {
+                userInputElement.disabled = true;
+            }
+        });
+    </script>
+</body>
+</html>
