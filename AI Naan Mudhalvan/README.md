@@ -50,5 +50,5 @@ Document the project and prepare it for submission.
 
 ## Authors
 
-- [Manoj Kumar](https://www.github.com/manojkumar2920)
+- [Marudhupandi](https://www.github.com/Marudsiva)
 
